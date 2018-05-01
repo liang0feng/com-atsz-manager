@@ -11,6 +11,7 @@ import com.atsz.manager.service.ProductdesService;
 
 @Service
 public class ProductdesServiceImpl extends BaseServiceImpl<Productdesc> implements ProductdesService{
+	
 	@Autowired
 	ProductMapper productMapper;
 	

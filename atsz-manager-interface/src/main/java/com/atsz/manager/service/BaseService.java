@@ -16,6 +16,7 @@ public interface BaseService<T> {
 	//按id查询
 	public T selectById(Long id);
 	
+
 	//分页查询
 	public List<T> selectByPage(Integer pageNum, Integer pageSize,T t);
 	

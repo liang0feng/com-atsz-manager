@@ -21,5 +21,7 @@
 	<dubbo:service interface="com.atsz.manager.service.ProductService" ref="productServiceImpl" timeout="10000000"></dubbo:service>
 	<dubbo:service interface="com.atsz.manager.service.ProductdesService" ref="productdesServiceImpl" timeout="10000000"></dubbo:service>
 	<dubbo:service interface="com.atsz.manager.service.redis.RedisService" ref="redisServiceImpl" timeout="10000000"></dubbo:service>
+	<dubbo:service interface="com.atsz.manager.service.ContentcategoryService" ref="contentcategoryServiceImpl" timeout="10000000"></dubbo:service>
+	<dubbo:service interface="com.atsz.manager.service.ContentService" ref="contentServiceImpl" timeout="10000000"></dubbo:service>
 	
 </beans>

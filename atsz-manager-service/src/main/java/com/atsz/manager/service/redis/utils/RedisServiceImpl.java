@@ -1,26 +1,31 @@
 package com.atsz.manager.service.redis.utils;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.atsz.manager.service.redis.Function;
-import com.atsz.manager.service.redis.RedisService;
 
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
+import com.atsz.manager.service.redis.Function;
+import com.atsz.manager.service.redis.RedisService;
+
 @Service
 public class RedisServiceImpl implements RedisService{
 	
+	private static final Logger logger = Logger
+			.getLogger(RedisServiceImpl.class);
+	
 	@Autowired(required=false) //需要在时才注入
 	private ShardedJedisPool shardedJedisPool;
+	
 	
 	//抽取出来的过程一样，返回类型不一样的代码
 	public <T> T execute(Function<ShardedJedis, T> fun) {
 		ShardedJedis jedisCli = null;
 		  // 从连接池中获取到jedis分片对象
 		try {
-			System.out.println("share连接池：" + shardedJedisPool);
+			logger.debug("缓存连接池对象：" + shardedJedisPool);
 			jedisCli= shardedJedisPool.getResource();
 			return fun.callback(jedisCli);
 		} catch (Exception e) {
@@ -28,6 +33,7 @@ public class RedisServiceImpl implements RedisService{
 		}finally {
 			if (jedisCli != null) {
 				jedisCli.close();
+				logger.debug("释放连接成功为null：" + jedisCli);
 			}
 		}
 		return null;
@@ -42,6 +48,7 @@ public class RedisServiceImpl implements RedisService{
 
 			@Override
 			public String callback(ShardedJedis e) {
+				logger.debug("设置缓存==============="+key+":"+value);
 				return e.set(key, value);
 			}
 
@@ -57,7 +64,9 @@ public class RedisServiceImpl implements RedisService{
 
 			@Override
 			public String callback(ShardedJedis e) {
-				return e.get(key);
+				String string = e.get(key);
+				logger.debug("读取缓存==============="+key+":" + string);
+				return string;
 			}
 			
 		});
@@ -86,6 +95,7 @@ public class RedisServiceImpl implements RedisService{
 
 			@Override
 			public Long callback(ShardedJedis e) {
+				logger.debug("设置缓存==============="+key+":" + seconds + "seconds");
 				return e.expire(key, seconds);
 			}
 		});
@@ -101,7 +111,7 @@ public class RedisServiceImpl implements RedisService{
 			@Override
 			public Long callback(ShardedJedis e) {
 				e.set(key, value);
-				
+				logger.debug("设置缓存==============="+key+":" + value +" life"+ seconds + "seconds");
 				return e.expire(key, seconds);
 			}
 		});
